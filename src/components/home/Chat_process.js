@@ -11,34 +11,42 @@ export function open() {
     chat.style.display = "block";
     document.querySelector(".chatbot").style.display = "none";
 }
+
 export const chat = () => {
     let chatContent = document.querySelector("#keypad");
     if (chatContent.value.trim() === "") return;
-    userChat(chatContent.value);
+
     let body = {
         text: chatContent.value,
     };
 
     const url = "http://127.0.0.1:8000/get-response/";
     axios.post(url, body).then((res) => {
+        console.log(res);
+        userChat(res.data.text_formated);
         botResponse(res.data.response);
+
         scrollChat();
     });
     chatContent.value = "";
 };
+
 const botResponse = (res) => {
     let chat = document.querySelector("#chats");
     let bot = document.createElement("div");
     bot.className = "bot";
+
     let image = document.createElement("img");
     image.src = "https://image.flaticon.com/icons/png/128/3649/3649460.png";
     image.className = "avatar";
     let para = document.createElement("p");
     para.className = "botMsg";
-    para.innerHTML = res;
+    let content = document.createElement("div");
+    content.innerHTML = res;
+
+    para.appendChild(content);
     bot.appendChild(image);
     bot.appendChild(para);
-
     chat.appendChild(bot);
 };
 
